@@ -96,6 +96,12 @@ void EventManager::createEvent(const string &title, const string &description, c
 void EventManager::updateEvent(int id, const string &title, const string &description, const string &date, const string &startTime, const string &endTime, const int &room)
 {
     loadEvents();
+    if (!eventList.checkSlotAvailability(date, room, startTime, endTime))
+    {
+        cout << "Slot not available.\n";
+        return;
+    }
+    
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
     {
         eventList.updateEvent(id, title, description, date, room, startTime, endTime);

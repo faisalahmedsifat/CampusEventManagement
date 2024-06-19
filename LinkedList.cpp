@@ -10,6 +10,7 @@ int timeToMinutes(const string &time)
 
 void LinkedList::addEvent(Event *event)
 {
+
     if (!head)
     {
         head = event;
@@ -57,6 +58,11 @@ void LinkedList::updateEvent(int eventID, const string &title, const string &des
         event->room = room;
         event->startTime = startTime;
         event->endTime = endTime;
+
+        cout << "\nEvent updated.\n";
+
+        cout << "\nEvent details:\n";
+        cout << "ID: " << event->eventID << ", Title: " << event->title << ", Description: " << event->description << ", Date: " << event->date << ", Start Time: " << event->startTime << ", End Time: " << event->endTime << ", Room: " << event->room << "\n";
     }
     else
     {
@@ -159,6 +165,7 @@ void LinkedList::removeAttendee(int eventID, string studentID)
                                   [studentID](const pair<string, string> &attendee)
                                   { return attendee.second == studentID; }),
                         attendees.end());
+        cout << "Attendee removed.\n";
     }
     else
     {
@@ -245,45 +252,3 @@ vector<Event *> LinkedList::searchEventsByLocation(int room)
     }
     return results;
 }
-// void LinkedList::saveToFile(const string &filename)
-// {
-//     ofstream file(filename);
-//     Event *temp = head;
-//     while (temp)
-//     {
-//         file << temp->eventID << "," << temp->ownerID << "," << temp->title << "," << temp->description << "," << temp->date << "," << temp->time << "," << temp->location;
-//         for (const auto &attendee : temp->attendees)
-//         {
-//             file << "," << attendee;
-//         }
-//         file << "\n";
-//         temp = temp->next;
-//     }
-// }
-
-// void LinkedList::loadFromFile(const string &filename)
-// {
-//     ifstream file(filename);
-//     string line;
-//     while (getline(file, line))
-//     {
-//         stringstream ss(line);
-//         string token;
-//         vector<string> tokens;
-//         while (getline(ss, token, ','))
-//         {
-//             tokens.push_back(token);
-//         }
-//         if (tokens.size() >= 7)
-//         {
-//             int id = stoi(tokens[0]);
-//             int ownerID = stoi(tokens[1]);
-//             Event *event = new Event(id, tokens[2], tokens[3], tokens[4], tokens[5], tokens[6], ownerID);
-//             for (size_t i = 7; i < tokens.size(); ++i)
-//             {
-//                 event->attendees.push_back(tokens[i]);
-//             }
-//             addEvent(event);
-//         }
-//     }
-// }

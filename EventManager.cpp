@@ -63,7 +63,7 @@ bool EventManager::isAdmin()
 
 bool EventManager::addUser(const string &username, const string &password, bool admin)
 {
-    // loadUsers();
+    loadUsers();
     users.push_back(User(nextUserId++, username, password, admin));
     cout << "User added.\n";
     saveUsers();
@@ -95,6 +95,7 @@ void EventManager::createEvent(const string &title, const string &description, c
 
 void EventManager::updateEvent(int id, const string &title, const string &description, const string &date, const string &startTime, const string &endTime, const int &room)
 {
+    loadEvents();
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
     {
         eventList.updateEvent(id, title, description, date, room, startTime, endTime);
@@ -108,6 +109,7 @@ void EventManager::updateEvent(int id, const string &title, const string &descri
 
 void EventManager::deleteEvent(int id)
 {
+    loadEvents();
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
     {
         eventList.deleteEvent(id);
@@ -128,6 +130,7 @@ void EventManager::displayEvents()
 
 Event *EventManager::searchEventByID(int id)
 {
+    loadEvents();
     Event *event = eventList.searchEventByID(id);
     if (event)
     {
@@ -143,14 +146,15 @@ Event *EventManager::searchEventByID(int id)
 
 void EventManager::addAttendee(int id, const string &attendee, string studentID)
 {
+    loadEvents();
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
         eventList.addAttendee(id, attendee, studentID);
     saveEvents();
 }
 
 void EventManager::removeAttendee(int id, string studentID)
-
 {
+    loadEvents();
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
         eventList.removeAttendee(id, studentID);
     saveEvents();
@@ -158,75 +162,91 @@ void EventManager::removeAttendee(int id, string studentID)
 
 void EventManager::displayAttendees(int id)
 {
+    loadEvents();
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
         eventList.displayAttendees(id);
 }
-
 void EventManager::searchEventsByTitle(const string &title)
 {
+    loadEvents();
     vector<Event *> search_result = eventList.searchEventsByTitle(title);
     for (Event *event : search_result)
     {
-        cout << "---------------------------------\n";
-        cout << "ID: " << event->eventID << endl;
-        cout << "Title: " << event->title << endl;
-        cout << "Description: " << event->description << endl;
-        cout << "Date: " << event->date << endl;
-        cout << "Start Time: " << event->startTime << endl;
-        cout << "End Time: " << event->endTime << endl;
-        cout << "Room: " << event->room << endl;
-        cout << "---------------------------------\n";
+        if (isAdmin() || event->ownerID == currentUser->userID)
+        {
+            cout << "---------------------------------\n";
+            cout << "ID: " << event->eventID << endl;
+            cout << "Title: " << event->title << endl;
+            cout << "Description: " << event->description << endl;
+            cout << "Date: " << event->date << endl;
+            cout << "Start Time: " << event->startTime << endl;
+            cout << "End Time: " << event->endTime << endl;
+            cout << "Room: " << event->room << endl;
+            cout << "---------------------------------\n";
+        }
     }
 }
 
 void EventManager::searchEventsByDate(const string &date)
 {
+    loadEvents();
     vector<Event *> search_result = eventList.searchEventsByDate(date);
     for (Event *event : search_result)
     {
-        cout << "---------------------------------\n";
-        cout << "ID: " << event->eventID << endl;
-        cout << "Title: " << event->title << endl;
-        cout << "Description: " << event->description << endl;
-        cout << "Date: " << event->date << endl;
-        cout << "Start Time: " << event->startTime << endl;
-        cout << "End Time: " << event->endTime << endl;
-        cout << "Room: " << event->room << endl;
-        cout << "---------------------------------\n";
+        if (isAdmin() || event->ownerID == currentUser->userID)
+        {
+            cout << "---------------------------------\n";
+            cout << "ID: " << event->eventID << endl;
+            cout << "Title: " << event->title << endl;
+            cout << "Description: " << event->description << endl;
+            cout << "Date: " << event->date << endl;
+            cout << "Start Time: " << event->startTime << endl;
+            cout << "End Time: " << event->endTime << endl;
+            cout << "Room: " << event->room << endl;
+            cout << "---------------------------------\n";
+        }
     }
 }
 
 void EventManager::searchEventsByTime(const string &time)
 {
+    loadEvents();
     vector<Event *> search_result = eventList.searchEventsByTime(time);
     for (Event *event : search_result)
     {
-        cout << "---------------------------------\n";
-        cout << "ID: " << event->eventID << endl;
-        cout << "Title: " << event->title << endl;
-        cout << "Description: " << event->description << endl;
-        cout << "Date: " << event->date << endl;
-        cout << "Start Time: " << event->startTime << endl;
-        cout << "End Time: " << event->endTime << endl;
-        cout << "Room: " << event->room << endl;
-        cout << "---------------------------------\n";
+        if (isAdmin() || event->ownerID == currentUser->userID)
+        {
+            cout << "---------------------------------\n";
+            cout << "ID: " << event->eventID << endl;
+            cout << "Title: " << event->title << endl;
+            cout << "Description: " << event->description << endl;
+            cout << "Date: " << event->date << endl;
+            cout << "Start Time: " << event->startTime << endl;
+            cout << "End Time: " << event->endTime << endl;
+            cout << "Room: " << event->room << endl;
+            cout << "---------------------------------\n";
+        }
     }
 }
 
 void EventManager::searchEventsByLocation(int room)
 {
+    loadEvents();
     vector<Event *> search_result =  eventList.searchEventsByLocation(room);
     for (Event *event : search_result)
     {
-        cout << "---------------------------------\n";
-        cout << "ID: " << event->eventID << endl;
-        cout << "Title: " << event->title << endl;
-        cout << "Description: " << event->description << endl;
-        cout << "Date: " << event->date << endl;
-        cout << "Start Time: " << event->startTime << endl;
-        cout << "End Time: " << event->endTime << endl;
-        cout << "Room: " << event->room << endl;
-        cout << "---------------------------------\n";
+        if (isAdmin() || event->ownerID == currentUser->userID)
+        {
+            cout << "---------------------------------\n";
+            cout << "ID: " << event->eventID << endl;
+            cout << "Title: " << event->title << endl;
+            cout << "Description: " << event->description << endl;
+            cout << "Date: " << event->date << endl;
+            cout << "Start Time: " << event->startTime << endl;
+            cout << "End Time: " << event->endTime << endl;
+            cout << "Room: " << event->room << endl;
+            cout << "---------------------------------\n";
+        }
     }
 }
 
@@ -245,12 +265,12 @@ void EventManager::saveEvents()
         file << temp->eventID << "," << temp->ownerID << "," << temp->title << "," << temp->description << "," << temp->date << "," << temp->room << "," << temp->startTime << "," << temp->endTime;
         for (const auto &attendee : temp->attendees)
         {
-            file << "," << attendee.first << ":" << attendee.second;
+            file << "," << attendee.first << "-" << attendee.second;
         }
         file << "\n";
         temp = temp->next;
     }
-    cout << "Events saved to file.\n";
+    // cout << "Events saved to file.\n";
 }
 
 void EventManager::loadEvents()
@@ -280,9 +300,9 @@ void EventManager::loadEvents()
             int room = stoi(tokens[5]);
            
             Event *event = new Event(id, tokens[2], tokens[3], tokens[4], room, tokens[6], tokens[7], ownerID);
-            for (size_t i = 7; i < tokens.size(); ++i)
+            for (size_t i = 8; i < tokens.size(); ++i)
             {
-                size_t pos = tokens[i].find(':');
+                size_t pos = tokens[i].find('-');
                 string attendeeName = tokens[i].substr(0, pos);
                 string attendeeID = tokens[i].substr(pos + 1);
                 event->attendees.push_back(make_pair(attendeeName, attendeeID));
@@ -294,7 +314,7 @@ void EventManager::loadEvents()
             }
         }
     }
-    cout << "Events loaded from file.\n";
+    // cout << "Events loaded from file.\n";
 }
 
 void EventManager::saveUsers()
@@ -310,7 +330,7 @@ void EventManager::saveUsers()
     {
         file << user.userID << "," << user.username << "," << user.password << "," << user.isAdmin << "\n";
     }
-    cout << "Users saved to file.\n";
+    // cout << "Users saved to file.\n";
 }
 
 void EventManager::loadUsers()
@@ -343,5 +363,5 @@ void EventManager::loadUsers()
             nextUserId = userID + 1;
         }
     }
-    cout << "Users loaded from file.\n";
+    // cout << "Users loaded from file.\n";
 }

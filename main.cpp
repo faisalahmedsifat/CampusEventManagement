@@ -230,17 +230,17 @@ void displayLoggedInMenu(EventManager &manager)
     cout << "Welcome, " << username << "!" << endl;
     cout << "\n---------------------------------\n"
          << endl;
-    cout << "3. Logout" << endl;
-    cout << "4. Add User" << endl;
-    cout << "5. Create Event" << endl;
-    cout << "6. Update Event" << endl;
-    cout << "7. Delete Event" << endl;
-    cout << "8. Display Events" << endl;
-    cout << "9. Search Event" << endl;
-    cout << "10. Add Attendee" << endl;
-    cout << "11. Remove Attendee" << endl;
-    cout << "12. Display Attendees" << endl;
-    cout << "13. Save to File" << endl;
+    
+    cout << "1. Create Event" << endl;
+    cout << "2. Update Event" << endl;
+    cout << "3. Delete Event" << endl;
+    cout << "4. Display Events" << endl;
+    cout << "5. Search Event" << endl;
+    cout << "6. Add Attendee" << endl;
+    cout << "7. Remove Attendee" << endl;
+    cout << "8. Display Attendees" << endl;
+    cout << "9. Save to File" << endl;
+    cout << "10. Logout" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
 }
@@ -329,50 +329,45 @@ void logged_in_menu(EventManager &manager)
         cin >> command;
         cin.ignore();
         // loggedInCommand(manager, command);
-        if (command == 3)
-        {
-            manager.logout();
-            break;
-        }
-        else if (command == 4)
-        {
-            adduser(manager);
-        }
-        else if (command == 5)
+        if (command == 1)
         {
             create(manager);
         }
-        else if (command == 6)
+        else if (command == 2)
         {
             update(manager);
         }
-        else if (command == 7)
+        else if (command == 3)
         {
             deleteEvent(manager);
         }
-        else if (command == 8)
+        else if (command == 4)
         {
             display(manager);
         }
-        else if (command == 9)
+        else if (command == 5)
         {
             search(manager);
         }
-        else if (command == 10)
+        else if (command == 6)
         {
             addAttendee(manager);
         }
-        else if (command == 11)
+        else if (command == 7)
         {
             removeAttendee(manager);
         }
-        else if (command == 12)
+        else if (command == 8)
         {
             attendees(manager);
         }
-        else if (command == 13)
+        else if (command == 9)
         {
             save(manager);
+        }
+        else if (command == 10){
+            manager.logout();
+            break;
         }
         else if (command == 0)
         {

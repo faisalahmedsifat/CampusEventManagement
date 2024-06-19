@@ -5,3 +5,4 @@
 5,saon,saon,1
 6,faisal,sifat,0
 7,fass,fass,0
+8,sif,sif,0

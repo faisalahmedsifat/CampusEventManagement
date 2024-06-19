@@ -1,20 +1,18 @@
 /**
  * @class EventManager
  * @brief Manages the events and users in the campus event management system.
- * 
+ *
  * The EventManager class is responsible for managing the events and users in the campus event management system.
  * It provides functionality to create, update, and delete events, as well as add and remove attendees from events.
  * The class also handles user authentication and provides methods to login and logout users.
- * 
+ *
  * The EventManager class uses the EventList class to store and manage the events, and the User class to store and manage the users.
  * It also provides methods to load and save events and users from/to files.
- * 
+ *
  * The EventManager class is designed to be used in a campus event management system, where users can create and manage events,
  * and attendees can register for and attend events.
  */
 #include "EventManager.h"
-
-
 
 EventManager::EventManager() : currentUser(nullptr), nextEventId(1), nextUserId(1)
 {
@@ -73,24 +71,17 @@ bool EventManager::addUser(const string &username, const string &password, bool 
     return true;
 }
 
-void EventManager::createEvent(const string &title, const string &description, const string &date, const int &slot, const int &room)
+void EventManager::createEvent(const string &title, const string &description, const string &date, const string &startTime, const string &endTime, const int &room)
 {
-    // if (isAdmin() )
-    // {
 
-    // }
-    // else
-    // {
-    //     cout << "Only admin can create events.\n";
-    // }
     loadEvents();
-    if (!eventList.checkSlotAvailability(date, slot, room))
+    if (!eventList.checkSlotAvailability(date, room, startTime, endTime))
     {
         cout << "Slot not available.\n";
         return;
     }
 
-    Event *event = new Event(nextEventId++, title, description, date, slot, room, currentUser->userID);
+    Event *event = new Event(nextEventId++, title, description, date, room, startTime, endTime, currentUser->userID);
 
     eventList.addEvent(event);
     cout << "\n---------------------------------\n"
@@ -102,11 +93,11 @@ void EventManager::createEvent(const string &title, const string &description, c
     saveEvents();
 }
 
-void EventManager::updateEvent(int id, const string &title, const string &description, const string &date, const int &slot, const int &room)
+void EventManager::updateEvent(int id, const string &title, const string &description, const string &date, const string &startTime, const string &endTime, const int &room)
 {
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
     {
-        eventList.updateEvent(id, title, description, date, slot, room);
+        eventList.updateEvent(id, title, description, date, room, startTime, endTime);
         saveEvents();
     }
     else
@@ -140,7 +131,7 @@ Event *EventManager::searchEventByID(int id)
     Event *event = eventList.searchEventByID(id);
     if (event)
     {
-        cout << "ID: " << event->eventID << ", Title: " << event->title << ", Date: " << event->date << ", Sot: " << event->slot << ", Room: " << event->room << "\n";
+        cout << "ID: " << event->eventID << ", Title: " << event->title << ", Date: " << event->date << ", Start time: " << event->startTime << ", End Time: " << event->endTime << ", Room: " << event->room << "\n";
         return event;
     }
     else
@@ -150,14 +141,14 @@ Event *EventManager::searchEventByID(int id)
     return nullptr;
 }
 
-void EventManager::addAttendee(int id, const string &attendee, int studentID)
+void EventManager::addAttendee(int id, const string &attendee, string studentID)
 {
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
         eventList.addAttendee(id, attendee, studentID);
     saveEvents();
 }
 
-void EventManager::removeAttendee(int id, int studentID)
+void EventManager::removeAttendee(int id, string studentID)
 
 {
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
@@ -169,6 +160,74 @@ void EventManager::displayAttendees(int id)
 {
     if (isAdmin() || eventList.searchEventByID(id)->ownerID == currentUser->userID)
         eventList.displayAttendees(id);
+}
+
+void EventManager::searchEventsByTitle(const string &title)
+{
+    vector<Event *> search_result = eventList.searchEventsByTitle(title);
+    for (Event *event : search_result)
+    {
+        cout << "---------------------------------\n";
+        cout << "ID: " << event->eventID << endl;
+        cout << "Title: " << event->title << endl;
+        cout << "Description: " << event->description << endl;
+        cout << "Date: " << event->date << endl;
+        cout << "Start Time: " << event->startTime << endl;
+        cout << "End Time: " << event->endTime << endl;
+        cout << "Room: " << event->room << endl;
+        cout << "---------------------------------\n";
+    }
+}
+
+void EventManager::searchEventsByDate(const string &date)
+{
+    vector<Event *> search_result = eventList.searchEventsByDate(date);
+    for (Event *event : search_result)
+    {
+        cout << "---------------------------------\n";
+        cout << "ID: " << event->eventID << endl;
+        cout << "Title: " << event->title << endl;
+        cout << "Description: " << event->description << endl;
+        cout << "Date: " << event->date << endl;
+        cout << "Start Time: " << event->startTime << endl;
+        cout << "End Time: " << event->endTime << endl;
+        cout << "Room: " << event->room << endl;
+        cout << "---------------------------------\n";
+    }
+}
+
+void EventManager::searchEventsByTime(const string &time)
+{
+    vector<Event *> search_result = eventList.searchEventsByTime(time);
+    for (Event *event : search_result)
+    {
+        cout << "---------------------------------\n";
+        cout << "ID: " << event->eventID << endl;
+        cout << "Title: " << event->title << endl;
+        cout << "Description: " << event->description << endl;
+        cout << "Date: " << event->date << endl;
+        cout << "Start Time: " << event->startTime << endl;
+        cout << "End Time: " << event->endTime << endl;
+        cout << "Room: " << event->room << endl;
+        cout << "---------------------------------\n";
+    }
+}
+
+void EventManager::searchEventsByLocation(int room)
+{
+    vector<Event *> search_result =  eventList.searchEventsByLocation(room);
+    for (Event *event : search_result)
+    {
+        cout << "---------------------------------\n";
+        cout << "ID: " << event->eventID << endl;
+        cout << "Title: " << event->title << endl;
+        cout << "Description: " << event->description << endl;
+        cout << "Date: " << event->date << endl;
+        cout << "Start Time: " << event->startTime << endl;
+        cout << "End Time: " << event->endTime << endl;
+        cout << "Room: " << event->room << endl;
+        cout << "---------------------------------\n";
+    }
 }
 
 void EventManager::saveEvents()
@@ -183,7 +242,7 @@ void EventManager::saveEvents()
     Event *temp = eventList.head;
     while (temp)
     {
-        file << temp->eventID << "," << temp->ownerID << "," << temp->title << "," << temp->description << "," << temp->date << "," << temp->slot << "," << temp->room;
+        file << temp->eventID << "," << temp->ownerID << "," << temp->title << "," << temp->description << "," << temp->date << "," << temp->room << "," << temp->startTime << "," << temp->endTime;
         for (const auto &attendee : temp->attendees)
         {
             file << "," << attendee.first << ":" << attendee.second;
@@ -219,13 +278,13 @@ void EventManager::loadEvents()
             int id = stoi(tokens[0]);
             int ownerID = stoi(tokens[1]);
             int room = stoi(tokens[5]);
-            int slot = stoi(tokens[6]);
-            Event *event = new Event(id, tokens[2], tokens[3], tokens[4], room, slot, ownerID);
+           
+            Event *event = new Event(id, tokens[2], tokens[3], tokens[4], room, tokens[6], tokens[7], ownerID);
             for (size_t i = 7; i < tokens.size(); ++i)
             {
                 size_t pos = tokens[i].find(':');
                 string attendeeName = tokens[i].substr(0, pos);
-                int attendeeID = stoi(tokens[i].substr(pos + 1));
+                string attendeeID = tokens[i].substr(pos + 1);
                 event->attendees.push_back(make_pair(attendeeName, attendeeID));
             }
             eventList.addEvent(event);

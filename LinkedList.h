@@ -19,15 +19,19 @@ public:
     LinkedList() : head(nullptr) {}
 
     void addEvent(Event *event);
-    void updateEvent(int eventID, const string &title, const string &description, const string &date, const int &slot, const int &room);
+    void updateEvent(int eventID, const string &title, const string &description, const string &date, int room, const string &startTime, const string &endTime);
     void deleteEvent(int eventID);
     Event *searchEventByID(int eventID);
     void displayEvents(User *currentUser);
-    void addAttendee(int eventID, const string &attendee, int studentID);
-    void removeAttendee(int eventID, int studentID);
+    void addAttendee(int eventID, const string &attendee, string studentID);
+    void removeAttendee(int eventID, string studentID);
     void displayAttendees(int eventID);
     void clear();
-    bool checkSlotAvailability(const string &date, const int &slot, const int &room);
+    bool checkSlotAvailability(const string &date, int room, const string &startTime, const string &endTime);
+    vector<Event *> searchEventsByTitle(const string &title);
+    vector<Event *> searchEventsByDate(const string &date);
+    vector<Event *> searchEventsByTime(const string &time);
+    vector<Event *> searchEventsByLocation(int room);
     // void saveToFile(const string &filename);
     // void loadFromFile(const string &filename);
 };

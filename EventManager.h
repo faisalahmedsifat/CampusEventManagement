@@ -1,19 +1,19 @@
 /**
  * @class EventManager
  * @brief Manages the events and users in a campus event management system.
- * 
+ *
  * The EventManager class is responsible for managing events and users in a campus event management system.
  * It provides functionalities to create, update, delete, and display events.
  * It also allows users to login, logout, and perform administrative tasks such as adding users and managing attendees.
  * The class uses a LinkedList to store the events and a vector to store the users.
- * 
+ *
  * The EventManager class has the following private member variables:
  * - eventList: A LinkedList object to store the events.
  * - users: A vector of User objects to store the users.
  * - currentUser: A pointer to the currently logged-in user.
  * - nextEventId: An integer to keep track of the next event ID.
  * - nextUserId: An integer to keep track of the next user ID.
- * 
+ *
  * The EventManager class provides the following public member functions:
  * - EventManager(): Default constructor to initialize the EventManager object.
  * - bool login(const string &username, const string &password): Logs in a user with the given username and password.
@@ -25,8 +25,8 @@
  * - void deleteEvent(int id): Deletes an event with the given ID.
  * - void displayEvents(): Displays all the events.
  * - Event *searchEventByID(int id): Searches for an event with the given ID and returns a pointer to it.
- * - void addAttendee(int id, const string &attendee, int studentID): Adds an attendee to an event with the given ID.
- * - void removeAttendee(int id, int studentID): Removes an attendee from an event with the given ID.
+ * - void addAttendee(int id, const string &attendee, string studentID): Adds an attendee to an event with the given ID.
+ * - void removeAttendee(int id, string studentID): Removes an attendee from an event with the given ID.
  * - void displayAttendees(int id): Displays the attendees of an event with the given ID.
  * - void saveEvents(): Saves the events to a file.
  * - void loadEvents(): Loads the events from a file.
@@ -36,8 +36,6 @@
  */
 #ifndef EVENTMANAGER_H
 #define EVENTMANAGER_H
-
-
 
 #include "LinkedList.h"
 #include "User.h"
@@ -60,19 +58,23 @@ public:
     void logout();
     bool isAdmin();
     bool addUser(const string &username, const string &password, bool admin);
-    void createEvent(const string &title, const string &description, const string &date, const int &slot, const int &room);
-    void updateEvent(int id, const string &title, const string &description, const string &date, const int &slot, const int &room);
+    void createEvent(const string &title, const string &description, const string &date, const string &startTime, const string &endTime, const int &room);
+    void updateEvent(int id, const string &title, const string &description, const string &date, const string &startTime, const string &endTime, const int &room);
     void deleteEvent(int id);
     void displayEvents();
     Event *searchEventByID(int id);
-    void addAttendee(int id, const string &attendee, int studentID);
-    void removeAttendee(int id, int studentID);
+    void addAttendee(int id, const string &attendee, string studentID);
+    void removeAttendee(int id, string studentID);
     void displayAttendees(int id);
     void saveEvents();
     void loadEvents();
     string getCurrentUsername();
     void saveUsers();
     void loadUsers();
+    void searchEventsByTitle(const string &title);
+    void searchEventsByDate(const string &date);
+    void searchEventsByTime(const string &time);
+    void searchEventsByLocation(int room);
 };
 
 #endif

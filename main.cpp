@@ -19,6 +19,8 @@ void parseLoggedInCommand(EventManager &manager, const int &command);
 void login(EventManager &manager);
 int displaySlots();
 int displayRooms();
+void logged_in_menu(EventManager &manager);
+void home_view(EventManager &manager);
 
 void adduser(EventManager &manager)
 {
@@ -36,8 +38,9 @@ void adduser(EventManager &manager)
 void create(EventManager &manager)
 {
     // int id;
-    string title, description, date;
-    int slot, room;
+    string title, description, date, starttime, endtime;
+    int room;
+
     // cout << "ID: ";
     // cin >> id;
     // cin.ignore();
@@ -49,21 +52,25 @@ void create(EventManager &manager)
     getline(cin, date);
 
     // Validate date format
-    if (date.length() != 10 || date[4] != '-' || date[7] != '-') {
+    if (date.length() != 10 || date[4] != '-' || date[7] != '-')
+    {
         cout << "Invalid date format. Please enter date in YYYY-MM-DD format." << endl;
         return;
     }
-    
-    slot = displaySlots();
+
+    cout << "Start time: ";
+    getline(cin, starttime);
+    cout << "End time: ";
+    getline(cin, endtime);
     room = displayRooms();
-    manager.createEvent(title, description, date, slot, room);
+    manager.createEvent(title, description, date, starttime, endtime, room);
 }
 
 void update(EventManager &manager)
 {
     int id;
-    string title, description, date;
-    int slot, room;
+    string title, description, date, starttime, endtime;
+    int room;
     cout << "ID: ";
     cin >> id;
     Event *found_event = manager.searchEventByID(id);
@@ -83,36 +90,13 @@ void update(EventManager &manager)
     getline(cin, description);
     cout << "Date: (" << found_event->date << "): ";
     getline(cin, date);
-    cout << "Slot: (" << found_event->slot << "): ";
-    cin >> slot;
+    cout << "Start time: (" << found_event->startTime << "): ";
+    getline(cin, starttime);
+    cout << "End time: (" << found_event->endTime << "): ";
+    getline(cin, endtime);
     cout << "Room: (" << found_event->room << "): ";
     cin >> room;
-    manager.updateEvent(id, title, description, date, slot, room);
-}
-
-int displaySlots()
-{
-    int slot;
-    cout << "\nSelect a slot:" << endl;
-    cout << "---------------------------------\n"
-         << endl;
-    cout << "1. 9:00 - 10:00" << endl;
-    cout << "2. 10:00 - 11:00" << endl;
-    cout << "3. 11:00 - 12:00" << endl;
-    cout << "4. 12:00 - 13:00" << endl;
-    cout << "5. 13:00 - 14:00" << endl;
-    cout << "6. 14:00 - 15:00" << endl;
-    cout << "7. 15:00 - 16:00" << endl;
-    cout << "8. 16:00 - 17:00" << endl;
-    cout << "9. 17:00 - 18:00" << endl;
-    cout << "10. 18:00 - 19:00" << endl;
-    cout << "11. 19:00 - 20:00" << endl;
-    cout << "12. 20:00 - 21:00" << endl;
-    cout << "13. 21:00 - 22:00" << endl;
-
-    cout << "Enter your choice: ";
-    cin >> slot;
-    return slot;
+    manager.updateEvent(id, title, description, date, starttime, endtime, room);
 }
 
 int displayRooms()
@@ -150,18 +134,18 @@ void display(EventManager &manager)
     manager.displayEvents();
 }
 
-void search(EventManager &manager)
+void searchEventById(EventManager &manager)
 {
     int id;
-    cout << "ID: ";
+    cout << "Enter ID: ";
     cin >> id;
     manager.searchEventByID(id);
 }
 
 void addAttendee(EventManager &manager)
 {
-    int id, studentId;
-    string attendee;
+    int id;
+    string attendee, studentId;
     cout << "Event ID: ";
     cin >> id;
     // TODO
@@ -169,18 +153,19 @@ void addAttendee(EventManager &manager)
     cout << "Attendee Name: ";
     getline(cin, attendee);
     cout << "Student ID: ";
-    cin >> studentId;
+    getline(cin, studentId);
     manager.addAttendee(id, attendee, studentId);
 }
 
 void removeAttendee(EventManager &manager)
 {
-    int id, studentId;
+    int id;
+    string studentId;
     cout << "Event ID: ";
     cin >> id;
     cin.ignore();
     cout << "Attendee Id: ";
-    cin >> studentId;
+    getline(cin, studentId);
     manager.removeAttendee(id, studentId);
 }
 
@@ -218,7 +203,7 @@ void displayInitialMenu()
 {
     cout << "1. Signup" << endl;
     cout << "2. Login" << endl;
-    cout << "0. Quit" << endl;
+    cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
 }
 
@@ -237,22 +222,6 @@ void processInitialCommand(EventManager &manager, const int &command)
         quit(manager);
     }
 }
-
-void logout(EventManager &manager)
-{
-    manager.logout();
-    // int command;
-    // while (true)
-    // {
-    //     // cout << "Enter command (login, logout, adduser, create, update, delete, display, search, addattendee, removeattendee, attendees, save, quit): ";
-    //     displayInitialMenu();
-    //     cin >> command;
-    //     cin.ignore();
-
-    //     processInitialCommand(manager, command);
-    // }
-}
-
 void displayLoggedInMenu(EventManager &manager)
 {
     string username = manager.getCurrentUsername();
@@ -272,59 +241,63 @@ void displayLoggedInMenu(EventManager &manager)
     cout << "11. Remove Attendee" << endl;
     cout << "12. Display Attendees" << endl;
     cout << "13. Save to File" << endl;
-    cout << "0. Quit" << endl;
+    cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
 }
 
-void parseLoggedInCommand(EventManager &manager, const int &command)
+void displaySearchMenu(EventManager &manager)
 {
-    if (command == 3)
+    cout << "\n---------------------------------\n"
+         << endl;
+    cout << "1. Search by ID" << endl;
+    cout << "2. Search by Title" << endl;
+    cout << "3. Search by Date" << endl;
+    cout << "0. Go Back" << endl;
+    cout << "Enter your choice: ";
+}
+
+void searchByTitle(EventManager &manager)
+{
+    string title;
+    cout << "Enter title: ";
+    cin.ignore();
+    getline(cin, title);
+    manager.searchEventsByTitle(title);
+}
+
+void searchByDate(EventManager &manager)
+{
+    string date;
+    cout << "Enter date (YYYY-MM-DD): ";
+    // cin.ignore();
+    getline(cin, date);
+    manager.searchEventsByDate(date);
+}
+
+void search(EventManager &manager)
+{
+    int command;
+    while (true)
     {
-        logout(manager);
-    }
-    else if (command == 4)
-    {
-        adduser(manager);
-    }
-    else if (command == 5)
-    {
-        create(manager);
-    }
-    else if (command == 6)
-    {
-        update(manager);
-    }
-    else if (command == 7)
-    {
-        deleteEvent(manager);
-    }
-    else if (command == 8)
-    {
-        display(manager);
-    }
-    else if (command == 9)
-    {
-        search(manager);
-    }
-    else if (command == 10)
-    {
-        addAttendee(manager);
-    }
-    else if (command == 11)
-    {
-        removeAttendee(manager);
-    }
-    else if (command == 12)
-    {
-        attendees(manager);
-    }
-    else if (command == 13)
-    {
-        save(manager);
-    }
-    else if (command == 0)
-    {
-        quit(manager);
+        displaySearchMenu(manager);
+        cin >> command;
+        cin.ignore();
+        if (command == 1)
+        {
+            searchEventById(manager);
+        }
+        else if (command == 2)
+        {
+            searchByTitle(manager);
+        }
+        else if (command == 3)
+        {
+            searchByDate(manager);
+        }
+        else if (command == 0)
+        {
+            break;
+        }
     }
 }
 
@@ -336,15 +309,97 @@ void login(EventManager &manager)
     cout << "Password: ";
     cin >> password;
     bool returnStatus = manager.login(username, password);
-    while (returnStatus)
+    if (returnStatus)
     {
-        int command;
-        while (true)
+        logged_in_menu(manager);
+    }
+    else
+    {
+        cout << "Invalid username or password.\n"
+             << endl;
+    }
+}
+
+void logged_in_menu(EventManager &manager)
+{
+    int command;
+    while (true)
+    {
+        displayLoggedInMenu(manager);
+        cin >> command;
+        cin.ignore();
+        // loggedInCommand(manager, command);
+        if (command == 3)
         {
-            displayLoggedInMenu(manager);
-            cin >> command;
-            cin.ignore();
-            parseLoggedInCommand(manager, command);
+            manager.logout();
+            break;
+        }
+        else if (command == 4)
+        {
+            adduser(manager);
+        }
+        else if (command == 5)
+        {
+            create(manager);
+        }
+        else if (command == 6)
+        {
+            update(manager);
+        }
+        else if (command == 7)
+        {
+            deleteEvent(manager);
+        }
+        else if (command == 8)
+        {
+            display(manager);
+        }
+        else if (command == 9)
+        {
+            search(manager);
+        }
+        else if (command == 10)
+        {
+            addAttendee(manager);
+        }
+        else if (command == 11)
+        {
+            removeAttendee(manager);
+        }
+        else if (command == 12)
+        {
+            attendees(manager);
+        }
+        else if (command == 13)
+        {
+            save(manager);
+        }
+        else if (command == 0)
+        {
+            quit(manager);
+        }
+    }
+}
+
+void home_view(EventManager &manager)
+{
+    int command;
+    while (true)
+    {
+        displayInitialMenu();
+        cin >> command;
+        cin.ignore();
+        if (command == 1)
+        {
+            signUp(manager);
+        }
+        else if (command == 2)
+        {
+            login(manager);
+        }
+        else if (command == 0)
+        {
+            break;
         }
     }
 }
@@ -355,16 +410,19 @@ int main()
     // manager.loadEvents();
     // manager.loadUsers();
 
-    int command;
-    while (true)
-    {
-        // cout << "Enter command (login, logout, adduser, create, update, delete, display, search, addattendee, removeattendee, attendees, save, quit): ";
-        displayInitialMenu();
-        cin >> command;
-        cin.ignore();
+    // int command;
+    // while (true)
+    // {
+    //     // cout << "Enter command (login, logout, adduser, create, update, delete, display, search, addattendee, removeattendee, attendees, save, quit): ";
+    //     displayInitialMenu();
+    //     cin >> command;
+    //     cin.ignore();
 
-        processInitialCommand(manager, command);
-    }
+    //     processInitialCommand(manager, command);
+
+    //     home_view();
+    // }
+    home_view(manager);
 
     return 0;
 }

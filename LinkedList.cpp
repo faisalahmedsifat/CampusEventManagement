@@ -1,6 +1,13 @@
 
 #include "LinkedList.h"
 
+int timeToMinutes(const string &time)
+{
+    int hours = stoi(time.substr(0, 2));
+    int minutes = stoi(time.substr(3, 2));
+    return hours * 60 + minutes;
+}
+
 void LinkedList::addEvent(Event *event)
 {
     if (!head)
@@ -18,21 +25,28 @@ void LinkedList::addEvent(Event *event)
     }
 }
 
-bool LinkedList::checkSlotAvailability(const string &date, const int &slot, const int &room)
+bool LinkedList::checkSlotAvailability(const string &date, int room, const string &startTime, const string &endTime)
 {
+    int newStart = timeToMinutes(startTime);
+    int newEnd = timeToMinutes(endTime);
+
     Event *temp = head;
     while (temp)
     {
-        if (temp->date == date && temp->slot == slot && temp->room == room)
+        if (temp->date == date && temp->room == room)
         {
-            return false;
+            int existingStart = timeToMinutes(temp->startTime);
+            int existingEnd = timeToMinutes(temp->endTime);
+            if ((newStart < existingEnd && newEnd > existingStart))
+            {
+                return false;
+            }
         }
         temp = temp->next;
     }
     return true;
 }
-
-void LinkedList::updateEvent(int eventID, const string &title, const string &description, const string &date, const int &slot, const int &room)
+void LinkedList::updateEvent(int eventID, const string &title, const string &description, const string &date, int room, const string &startTime, const string &endTime)
 {
     Event *event = searchEventByID(eventID);
     if (event)
@@ -40,9 +54,9 @@ void LinkedList::updateEvent(int eventID, const string &title, const string &des
         event->title = title;
         event->description = description;
         event->date = date;
-        event->slot = slot;
         event->room = room;
-
+        event->startTime = startTime;
+        event->endTime = endTime;
     }
     else
     {
@@ -88,6 +102,7 @@ Event *LinkedList::searchEventByID(int eventID)
     }
     return nullptr;
 }
+
 void LinkedList::displayEvents(User *currentUser)
 {
     Event *temp = head;
@@ -97,7 +112,7 @@ void LinkedList::displayEvents(User *currentUser)
     {
         if (currentUser->userID == 1 || temp->ownerID == currentUser->userID)
         {
-            cout << "ID: " << temp->eventID << ", Title: " << temp->title << ", Date: " << temp->date << ", Slot: " << temp->slot << ", Room: " << temp->room << "\n";
+            cout << "ID: " << temp->eventID << ", Title: " << temp->title << ", Date: " << temp->date << ", Start Time: " << temp->startTime << ", End Time: " << temp->endTime << ", Room: " << temp->room << "\n";
             cout << "Attendees: ";
             for (const auto &attendee : temp->attendees)
             {
@@ -121,7 +136,7 @@ void LinkedList::clear()
     }
     head = nullptr;
 }
-void LinkedList::addAttendee(int eventID, const string &attendee, int studentID)
+void LinkedList::addAttendee(int eventID, const string &attendee, string studentID)
 {
     Event *event = searchEventByID(eventID);
     if (event)
@@ -134,14 +149,14 @@ void LinkedList::addAttendee(int eventID, const string &attendee, int studentID)
     }
 }
 
-void LinkedList::removeAttendee(int eventID, int studentID)
+void LinkedList::removeAttendee(int eventID, string studentID)
 {
     Event *event = searchEventByID(eventID);
     if (event)
     {
         auto &attendees = event->attendees;
         attendees.erase(remove_if(attendees.begin(), attendees.end(),
-                                  [studentID](const pair<string, int> &attendee)
+                                  [studentID](const pair<string, string> &attendee)
                                   { return attendee.second == studentID; }),
                         attendees.end());
     }
@@ -168,6 +183,68 @@ void LinkedList::displayAttendees(int eventID)
     }
 }
 
+vector<Event *> LinkedList::searchEventsByTitle(const string &title)
+{
+    vector<Event *> results;
+    Event *temp = head;
+    while (temp)
+    {
+        if (temp->title.find(title) != string::npos)
+        {
+            results.push_back(temp);
+        }
+        temp = temp->next;
+    }
+    return results;
+}
+
+vector<Event *> LinkedList::searchEventsByDate(const string &date)
+{
+    vector<Event *> results;
+    Event *temp = head;
+    while (temp)
+    {
+        if (temp->date == date)
+        {
+            results.push_back(temp);
+        }
+        temp = temp->next;
+    }
+    return results;
+}
+
+vector<Event *> LinkedList::searchEventsByTime(const string &time)
+{
+    vector<Event *> results;
+    int targetTime = timeToMinutes(time);
+    Event *temp = head;
+    while (temp)
+    {
+        int eventStart = timeToMinutes(temp->startTime);
+        int eventEnd = timeToMinutes(temp->endTime);
+        if (targetTime >= eventStart && targetTime <= eventEnd)
+        {
+            results.push_back(temp);
+        }
+        temp = temp->next;
+    }
+    return results;
+}
+
+vector<Event *> LinkedList::searchEventsByLocation(int room)
+{
+    vector<Event *> results;
+    Event *temp = head;
+    while (temp)
+    {
+        if (temp->room == room)
+        {
+            results.push_back(temp);
+        }
+        temp = temp->next;
+    }
+    return results;
+}
 // void LinkedList::saveToFile(const string &filename)
 // {
 //     ofstream file(filename);

@@ -3,3 +3,5 @@
 3,omi,omi123,0
 4,shaon,shaon123,0
 5,saon,saon,1
+6,faisal,sifat,0
+7,fass,fass,0

@@ -1,0 +1,37 @@
+# depslib dependency file v1.0
+1718744127 source:f:\projects\shaon\codeblocks\campuseventmanagement\event.cpp
+	"Event.h"
+
+1718780254 f:\projects\shaon\codeblocks\campuseventmanagement\event.h
+	<string>
+	<vector>
+
+1718783925 source:f:\projects\shaon\codeblocks\campuseventmanagement\eventmanager.cpp
+	"EventManager.h"
+
+1718780873 f:\projects\shaon\codeblocks\campuseventmanagement\eventmanager.h
+	"LinkedList.h"
+	"User.h"
+	<vector>
+
+1718780322 f:\projects\shaon\codeblocks\campuseventmanagement\linkedlist.h
+	"Event.h"
+	"User.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<algorithm>
+
+1718784580 f:\projects\shaon\codeblocks\campuseventmanagement\user.h
+	<string>
+
+1718783584 source:f:\projects\shaon\codeblocks\campuseventmanagement\linkedlist.cpp
+	"LinkedList.h"
+
+1718781850 source:f:\projects\shaon\codeblocks\campuseventmanagement\main.cpp
+	<iostream>
+	"EventManager.h"
+
+1718744124 source:f:\projects\shaon\codeblocks\campuseventmanagement\user.cpp
+	"User.h"
+

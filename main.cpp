@@ -239,8 +239,8 @@ void displayLoggedInMenu(EventManager &manager)
     cout << "6. Add Attendee" << endl;
     cout << "7. Remove Attendee" << endl;
     cout << "8. Display Attendees" << endl;
-    cout << "9. Save to File" << endl;
-    cout << "10. Logout" << endl;
+    // cout << "9. Save to File" << endl;
+    cout << "9. Logout" << endl;
     cout << "0. Exit" << endl;
     cout << "Enter your choice: ";
 }
@@ -361,11 +361,7 @@ void logged_in_menu(EventManager &manager)
         {
             attendees(manager);
         }
-        else if (command == 9)
-        {
-            save(manager);
-        }
-        else if (command == 10){
+        else if (command == 9){
             manager.logout();
             break;
         }
